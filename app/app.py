@@ -8,7 +8,7 @@ import json
 import os
 import shlex
 
-from win10toast import ToastNotifier
+# from win10toast import ToastNotifier
 
 app = Flask(__name__)
 
