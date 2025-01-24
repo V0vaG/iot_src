@@ -28,8 +28,33 @@
             font-size: 26px;
             color: #333333;
         }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555555;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
         .btn-container {
             margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
         }
         .btn {
             padding: 12px;
@@ -52,10 +77,25 @@
 <body>
     <div class="container">
         <h2>Add New End Point</h2>
-        <p>This is a placeholder for adding a new end point. You can add a form or functionality here.</p>
-        <div class="btn-container">
-            <a href="/iot.html" class="btn">&#8592; Back</a>
-        </div>
+        <form>
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter end point name">
+            </div>
+            <div class="form-group">
+                <label for="toggle_name">Toggle Name</label>
+                <input type="text" id="toggle_name" name="toggle_name" placeholder="Enter toggle name">
+            </div>
+            <div class="form-group">
+                <label for="toggle_pin">Toggle Pin</label>
+                <input type="text" id="toggle_pin" name="toggle_pin" placeholder="Enter toggle pin">
+            </div>
+            <div class="btn-container">
+                <a href="/iot.html" class="btn">&#8592; Back</a>
+                <a href="/pair" class="btn">Pair</a>
+                <button type="submit" class="btn">Save</button>
+            </div>
+        </form>
     </div>
 </body>
 </html>
