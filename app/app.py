@@ -231,6 +231,11 @@ def send():
         send_message(msg)
     return redirect(url_for('index'))
 
+@app.route('/iot.html')
+def iot():
+    return render_template('iot.html')
+
+
 @app.route('/options.html')
 def options():
     # Mapping for display

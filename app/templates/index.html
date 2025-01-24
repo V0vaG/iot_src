@@ -38,17 +38,28 @@
             font-size: 12px;
             margin-top: 5px;
         }
-        .gear-button {
+        .button-container {
             position: absolute;
             top: 10px;
             right: 10px;
-            background: none;
+            display: flex;
+            gap: 10px;
+        }
+        .button-container a {
+            background-color: #fff;
+            color: #007BFF;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
             border: none;
             cursor: pointer;
+            display: inline-block;
         }
-        .gear-button img {
-            width: 24px;
-            height: 24px;
+        .button-container a:hover {
+            background-color: #0056b3;
+            color: #fff;
         }
         .status {
             text-align: center;
@@ -113,9 +124,10 @@
             <div class="info">
                 <p><strong>Model:</strong> {{ pi_model }} | <strong>IP:</strong> {{ local_ip }}</p>
             </div>
-            <a href="/options.html" class="gear-button">
-                <img src="https://cdn-icons-png.flaticon.com/512/126/126472.png" alt="Options">
-            </a>
+            <div class="button-container">
+                <a href="/options.html">Options</a>
+                <a href="/iot.html">IoT</a>
+            </div>
         </div>
         <p class="status"><strong>RF Module Status:</strong> {{ status }}</p>
         <div class="messages">
