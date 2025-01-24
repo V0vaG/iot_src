@@ -104,7 +104,7 @@ def send_command():
 
         # Construct the message
         message = f"ardu 0 set {toggle_pin} {state}"
-        send_message(message)
+        success = send_message(message)
         print(f"Sending message: {message}")
 
         # Send the message
@@ -307,6 +307,7 @@ def send_message(message):
         messages.append(f"Sent: {trimmed_message} [Failed]")
     
     radio.startListening()
+    return success
 
 @app.route('/')
 def index():
