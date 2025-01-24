@@ -44,7 +44,6 @@
             background-color: #007BFF;
             color: white;
         }
-        /* Styling for buttons (links that look like buttons) */
         .btn {
             display: inline-block;
             padding: 8px 16px;
@@ -62,6 +61,16 @@
         }
         .btn:hover {
             background-color: #0056b3;
+        }
+        .btn-link {
+            background: none;
+            color: #007BFF;
+            border: none;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .btn-link:hover {
+            color: #0056b3;
         }
     </style>
 </head>
@@ -83,8 +92,10 @@
                 {% for endpoint in end_points %}
                     <tr>
                         <td>
-                            <!-- Make endpoint name a clickable button -->
-                            <a href="/end_point/{{ endpoint.name }}" class="btn">{{ endpoint.name }}</a>
+                            <!-- Use a form with a button for the endpoint name -->
+                            <form action="/end_point/{{ endpoint.name }}" method="GET" style="display: inline;">
+                                <button type="submit" class="btn">{{ endpoint.name }}</button>
+                            </form>
                         </td>
                         <td>{{ endpoint.radio[0].channel }}</td>
                         <td>{{ endpoint.radio[0].read_pipe }}</td>
