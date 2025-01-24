@@ -14,9 +14,15 @@ app = Flask(__name__)
 
 
 # Define the JSON file path
-ENDPOINTS_FILE = "end_points.json"
+# ENDPOINTS_FILE = "end_points.json"
 
-CONFIG_FILE = "radio_config.json"
+# CONFIG_FILE = "radio_config.json"
+
+alias = "iot"
+HOME_DIR = os.path.expanduser("~")
+FILES_PATH = os.path.join(HOME_DIR, "script_files", alias)
+ENDPOINTS_FILE = os.path.join(FILES_PATH, "end_points.json")
+CONFIG_FILE = os.path.join(FILES_PATH, "radio_config.json")
 
 def save_config(writing_pipe, reading_pipes, allow_remote_control=False):
     """Save the current radio configuration to a JSON file."""
@@ -157,6 +163,58 @@ def load_config():
             "allow_remote_control": False
         }
 
+@app.route('/add_end_point', methods=['GET', 'POST'])
+def add_end_point():
+    if request.method == 'POST':
+        # Retrieve form data
+        name = request.form.get('name')
+        channel = request.form.get('channel')
+        read_pipe = request.form.get('read_pipe')
+        write_pipe = request.form.get('write_pipe')
+        data_rate = request.form.get('data_rate')
+        pa_level = request.form.get('pa_level')
+
+        # Prepare the data structure
+        new_end_point = {
+            "name": name,
+            "radio": [
+                {
+                    "channel": channel,
+                    "read_pipe": read_pipe,
+                    "write_pipe": write_pipe,
+                    "data_rate": data_rate,
+                    "pa_level": pa_level
+                }
+            ],
+            "toggles": [
+                {
+                    "toggle_name": toggle_name,
+                    "toggle_pin": toggle_pin
+                }
+            ]
+        }
+
+        # Load existing data from the JSON file
+        if os.path.exists(ENDPOINTS_FILE):
+            with open(ENDPOINTS_FILE, 'r') as file:
+                data = json.load(file)
+        else:
+            data = {"end_points": []}
+
+        # Append the new end point
+        data["end_points"].append(new_end_point)
+
+        # Save updated data back to the JSON file
+        with open(ENDPOINTS_FILE, 'w') as file:
+            json.dump(data, file, indent=4)
+
+        print(f"New end point saved: {new_end_point}")
+
+        # Redirect back to the IoT page or a confirmation page
+        return redirect(url_for('iot'))
+
+    # If it's a GET request, render the add_end_point.html page
+    return render_template('add_end_point.html')
 
 # Get local IP address
 def get_local_ip():
@@ -321,62 +379,6 @@ def send():
         send_message(msg)
     return redirect(url_for('index'))
 
-@app.route('/add_end_point', methods=['GET', 'POST'])
-def add_end_point():
-    if request.method == 'POST':
-        # Retrieve form data
-        name = request.form.get('name')
-        toggle_name = request.form.get('toggle_name')
-        toggle_pin = request.form.get('toggle_pin')
-        channel = request.form.get('channel')
-        read_pipe = request.form.get('read_pipe')
-        write_pipe = request.form.get('write_pipe')
-        data_rate = request.form.get('data_rate')
-        pa_level = request.form.get('pa_level')
-
-        # Prepare the data structure
-        new_end_point = {
-            "name": name,
-            "radio": [
-                {
-                    "channel": channel,
-                    "read_pipe": read_pipe,
-                    "write_pipe": write_pipe,
-                    "data_rate": data_rate,
-                    "pa_level": pa_level
-                }
-            ],
-            "toggles": [
-                {
-                    "toggle_name": toggle_name,
-                    "toggle_pin": toggle_pin
-                }
-            ]
-        }
-
-        # Load existing data from the JSON file
-        if os.path.exists(ENDPOINTS_FILE):
-            with open(ENDPOINTS_FILE, 'r') as file:
-                data = json.load(file)
-        else:
-            data = {"end_points": []}
-
-        # Append the new end point
-        data["end_points"].append(new_end_point)
-
-        # Save updated data back to the JSON file
-        with open(ENDPOINTS_FILE, 'w') as file:
-            json.dump(data, file, indent=4)
-
-        print(f"New end point saved: {new_end_point}")
-
-        # Redirect back to the IoT page or a confirmation page
-        return redirect(url_for('iot'))
-
-    # If it's a GET request, render the add_end_point.html page
-    return render_template('add_end_point.html')
-
-
 @app.route('/iot.html')
 def iot():
     # Path to the JSON file
@@ -427,8 +429,6 @@ def pair():
         messages.append(f"Pairing failed: {e}")
         return redirect(url_for('iot'))
 
-
-
 @app.route('/options.html')
 def options():
     # Mapping for display
@@ -449,7 +449,6 @@ def options():
     }
 
     return render_template('options.html', settings=current_settings)
-
 
 @app.route('/update_config', methods=['POST'])
 def update_config():
