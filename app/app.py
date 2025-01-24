@@ -410,8 +410,8 @@ def update_config():
 
 # Notification function
 def show_notification(title, message):
-    toaster = ToastNotifier()
-    toaster.show_toast(title, message, duration=10)  # Shows for 10 seconds
+    os.system(f'notify-send "{title}" "{message}"')
+
 
 def start_receiver():
     threading.Thread(target=receive_messages, daemon=True).start()
