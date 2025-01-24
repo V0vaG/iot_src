@@ -56,6 +56,7 @@ def end_point(name):
 
 @app.route('/send_command', methods=['POST'])
 def send_command():
+    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
     data = request.get_json()
     if not data:
         return {"error": "Invalid data"}, 400
