@@ -241,10 +241,20 @@ def add_end_point():
         name = request.form.get('name')
         toggle_name = request.form.get('toggle_name')
         toggle_pin = request.form.get('toggle_pin')
+        channel = request.form.get('channel')
+        read_pipe = request.form.get('read_pipe')
+        write_pipe = request.form.get('write_pipe')
 
         # Prepare the data structure
         new_end_point = {
             "name": name,
+            "radio": [
+                {
+                    "channel": channel,
+                    "read_pipe": read_pipe,
+                    "write_pipe": write_pipe
+                }
+            ],
             "toggles": [
                 {
                     "toggle_name": toggle_name,
@@ -275,9 +285,21 @@ def add_end_point():
     # If it's a GET request, render the add_end_point.html page
     return render_template('add_end_point.html')
 
-@app.route('/add_end_point.html')
-def add_end_point():
-    return render_template('add_end_point.html')
+@app.route('/iot.html')
+def iot():
+    # Path to the JSON file
+    ENDPOINTS_FILE = "end_points.json"
+
+    # Load end points from the JSON file
+    if os.path.exists(ENDPOINTS_FILE):
+        with open(ENDPOINTS_FILE, 'r') as file:
+            data = json.load(file)
+    else:
+        data = {"end_points": []}
+
+    # Pass the end points to the template
+    return render_template('iot.html', end_points=data.get('end_points', []))
+
 
 @app.route('/options.html')
 def options():

@@ -16,23 +16,33 @@
             height: 100vh;
         }
         .container {
-            width: 600px;
+            width: 800px;
             background-color: #ffffff;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             border-radius: 12px;
             padding: 30px 40px;
-            text-align: center;
         }
         h2 {
             margin-bottom: 20px;
             font-size: 26px;
             color: #333333;
+            text-align: center;
         }
-        .btn-container {
-            margin-top: 20px;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
         }
         .btn {
             padding: 12px;
@@ -42,7 +52,6 @@
             border-radius: 6px;
             font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s;
             text-align: center;
             text-decoration: none;
             display: inline-block;
@@ -55,11 +64,35 @@
 <body>
     <div class="container">
         <h2>IoT Device Configuration</h2>
-        <p>This is a placeholder for your IoT configuration page. You can add content or functionality here.</p>
-        <div class="btn-container">
-            <a href="/" class="btn">&#8592; Back to Home</a>
-            <a href="/add_end_point.html" class="btn">Add End Point</a>
-        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Channel</th>
+                    <th>Read Pipe</th>
+                    <th>Write Pipe</th>
+                    <th>Toggle Name</th>
+                    <th>Toggle Pin</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for endpoint in end_points %}
+                    <tr>
+                        <td>{{ endpoint.name }}</td>
+                        <td>{{ endpoint.radio[0].channel }}</td>
+                        <td>{{ endpoint.radio[0].read_pipe }}</td>
+                        <td>{{ endpoint.radio[0].write_pipe }}</td>
+                        <td>{{ endpoint.toggles[0].toggle_name }}</td>
+                        <td>{{ endpoint.toggles[0].toggle_pin }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" style="text-align: center;">No end points found</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="/add_end_point" class="btn">Add End Point</a>
     </div>
 </body>
 </html>
