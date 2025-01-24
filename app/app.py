@@ -382,7 +382,7 @@ def send():
 @app.route('/iot.html')
 def iot():
     # Path to the JSON file
-    ENDPOINTS_FILE = "end_points.json"
+    # ENDPOINTS_FILE = "end_points.json"
 
     # Load end points from the JSON file
     if os.path.exists(ENDPOINTS_FILE):
