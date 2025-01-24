@@ -300,6 +300,45 @@ def iot():
     # Pass the end points to the template
     return render_template('iot.html', end_points=data.get('end_points', []))
 
+@app.route('/pair', methods=['POST'])
+def pair():
+    try:
+        # Configure the radio to channel 77, pipe addresses
+        radio.stopListening()
+        radio.setChannel(77)
+        radio.openWritingPipe(b'2Node')
+        radio.openReadingPipe(1, b'1Node')
+        radio.startListening()
+        messages.append("Radio configured for pairing: Channel 77, Pipes: 1Node <-> 2Node")
+        
+        # Start listening in a background thread
+        def listen_for_endpoint():
+            global messages
+            while True:
+                if radio.available():
+                    while radio.available():
+                        length = radio.getDynamicPayloadSize()
+                        if length > 0:
+                            received_payload = radio.read(length)
+                            try:
+                                message = received_payload.decode('utf-8').strip('\x00')
+                                messages.append(f"Received: {message}")
+                                if "Hi, my name is Ardu" in message:
+                                    # Trigger notification (can be replaced with frontend code)
+                                    os.system(f'notify-send "Found end point!!!" "{message}"')  # For Linux
+                                    return
+                            except UnicodeDecodeError:
+                                messages.append("Received: [Corrupted/Invalid data]")
+                time.sleep(0.5)
+
+        # Start a new thread for pairing
+        threading.Thread(target=listen_for_endpoint, daemon=True).start()
+        return redirect(url_for('iot'))
+
+    except Exception as e:
+        messages.append(f"Pairing failed: {e}")
+        return redirect(url_for('iot'))
+
 
 @app.route('/options.html')
 def options():
