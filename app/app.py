@@ -236,7 +236,7 @@ def iot():
     return render_template('iot.html')
 
 @app.route('/add_end_point.html')
-def iot():
+def add_end_point():
     return render_template('add_end_point.html')
 
 @app.route('/options.html')
