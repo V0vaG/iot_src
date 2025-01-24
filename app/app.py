@@ -94,11 +94,11 @@ def send_command():
         data_rates = {"1MBPS": RF24_1MBPS, "2MBPS": RF24_2MBPS, "250KBPS": RF24_250KBPS}
         pa_levels = {"MIN": RF24_PA_MIN, "LOW": RF24_PA_LOW, "HIGH": RF24_PA_HIGH, "MAX": RF24_PA_MAX}
 
-        radio.setChannel(channel)
-        radio.openWritingPipe(write_pipe.encode('utf-8'))
-        radio.openReadingPipe(1, read_pipe.encode('utf-8'))
-        radio.setDataRate(data_rates[data_rate])
-        radio.setPALevel(pa_levels[pa_level])
+        # radio.setChannel(channel)
+        # radio.openWritingPipe(write_pipe.encode('utf-8'))
+        # radio.openReadingPipe(1, read_pipe.encode('utf-8'))
+        # radio.setDataRate(data_rates[data_rate])
+        # radio.setPALevel(pa_levels[pa_level])
 
         print(f"Configured RF24 - Channel: {channel}, Write Pipe: {write_pipe}, Read Pipe: {read_pipe}, Data Rate: {data_rate}, PA Level: {pa_level}")
 
