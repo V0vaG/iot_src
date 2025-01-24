@@ -104,10 +104,11 @@ def send_command():
 
         # Construct the message
         message = f"ardu 0 set {toggle_pin} {state}"
+        send_message(message)
         print(f"Sending message: {message}")
 
         # Send the message
-        success = radio.write(message.encode('utf-8'))
+        #success = radio.write(message.encode('utf-8'))
         radio.startListening()
 
         print(f"Radio write success: {success}")
