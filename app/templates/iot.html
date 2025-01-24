@@ -72,12 +72,10 @@
         <table>
             <thead>
                 <tr>
-                    <th>Name1</th>
+                    <th>Name</th>
                     <th>Channel</th>
                     <th>Read Pipe</th>
                     <th>Write Pipe</th>
-                    <th>Toggle Name</th>
-                    <th>Toggle Pin</th>
                 </tr>
             </thead>
             <tbody>
@@ -92,12 +90,10 @@
                         <td>{{ endpoint.radio[0].channel }}</td>
                         <td>{{ endpoint.radio[0].read_pipe }}</td>
                         <td>{{ endpoint.radio[0].write_pipe }}</td>
-                        <td>{{ endpoint.toggles[0].toggle_name }}</td>
-                        <td>{{ endpoint.toggles[0].toggle_pin }}</td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="6" style="text-align: center;">No end points found</td>
+                        <td colspan="4" style="text-align: center;">No end points found</td>
                     </tr>
                 {% endfor %}
             </tbody>
