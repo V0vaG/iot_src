@@ -21,8 +21,8 @@ app = Flask(__name__)
 alias = "iot"
 HOME_DIR = os.path.expanduser("~")
 FILES_PATH = os.path.join(HOME_DIR, "script_files", alias)
-ENDPOINTS_FILE = os.path.join(FILES_PATH, "end_points.json")
-CONFIG_FILE = os.path.join(FILES_PATH, "radio_config.json")
+ENDPOINTS_FILE = os.path.join(HOME_DIR, "end_points.json")
+CONFIG_FILE = os.path.join(HOME_DIR, "radio_config.json")
 
 def save_config(writing_pipe, reading_pipes, allow_remote_control=False):
     """Save the current radio configuration to a JSON file."""
