@@ -98,30 +98,27 @@
         input:checked + .slider:before {
             transform: translateX(26px);
         }
+        .action-fields {
+            display: none;
+            margin-top: 10px;
+        }
+        .action-fields input {
+            margin-bottom: 10px;
+            padding: 8px;
+            width: calc(100% - 20px);
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
     </style>
     <script>
-        async function sendCommand(endpointName, toggleName, togglePin, state) {
-            const response = await fetch(`/send_command`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    endpoint_name: endpointName,
-                    toggle_name: toggleName,
-                    toggle_pin: togglePin,
-                    state: state
-                })
-            });
-
-            if (!response.ok) {
-                alert('Failed to send command');
+        function handleActionChange(event, actionId) {
+            const actionFields = document.getElementById(actionId);
+            if (event.target.value === "digital_write") {
+                actionFields.style.display = "block";
+            } else {
+                actionFields.style.display = "none";
             }
-        }
-
-        function handleToggleChange(event, endpointName, toggleName, togglePin) {
-            const state = event.target.checked ? 'on' : 'off';
-            sendCommand(endpointName, toggleName, togglePin, state);
         }
     </script>
 </head>
@@ -135,6 +132,7 @@
                     <th>Toggle Name</th>
                     <th>Toggle Pin</th>
                     <th>Action</th>
+                    <th>Add Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -148,10 +146,23 @@
                                 <span class="slider"></span>
                             </label>
                         </td>
+                        <td>
+                            <select onchange="handleActionChange(event, 'action-fields-{{ loop.index }}')">
+                                <option value="">Select Action</option>
+                                <option value="digital_write">Digital Write</option>
+                                <option value="analog_write">Analog Write</option>
+                                <option value="digital_read">Digital Read</option>
+                                <option value="analog_read">Analog Read</option>
+                            </select>
+                            <div id="action-fields-{{ loop.index }}" class="action-fields">
+                                <input type="text" placeholder="Action Name">
+                                <input type="text" placeholder="GPIO Pin Number">
+                            </div>
+                        </td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="3" style="text-align: center;">No toggles found</td>
+                        <td colspan="4" style="text-align: center;">No toggles found</td>
                     </tr>
                 {% endfor %}
             </tbody>
