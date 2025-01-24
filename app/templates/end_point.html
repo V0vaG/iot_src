@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IoT Configuration</title>
+    <title>{{ end_point.name }} - Details</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -16,7 +16,7 @@
             height: 100vh;
         }
         .container {
-            width: 800px;
+            width: 600px;
             background-color: #ffffff;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             border-radius: 12px;
@@ -63,42 +63,28 @@
 </head>
 <body>
     <div class="container">
-        <h2>IoT Device Configuration</h2>
+        <h2>{{ end_point.name }} - Details</h2>
         <table>
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Channel</th>
-                    <th>Read Pipe</th>
-                    <th>Write Pipe</th>
                     <th>Toggle Name</th>
                     <th>Toggle Pin</th>
                 </tr>
             </thead>
             <tbody>
-                {% for endpoint in end_points %}
+                {% for toggle in end_point.toggles %}
                     <tr>
-                        <td>
-                            <!-- Make endpoint name a button that links to /end_point/{{ endpoint.name }} -->
-                            <form action="/end_point/{{ endpoint.name }}" method="GET" style="display: inline;">
-                                <button type="submit" class="btn">{{ endpoint.name }}</button>
-                            </form>
-                        </td>
-                        <td>{{ endpoint.radio[0].channel }}</td>
-                        <td>{{ endpoint.radio[0].read_pipe }}</td>
-                        <td>{{ endpoint.radio[0].write_pipe }}</td>
-                        <td>{{ endpoint.toggles[0].toggle_name }}</td>
-                        <td>{{ endpoint.toggles[0].toggle_pin }}</td>
+                        <td>{{ toggle.toggle_name }}</td>
+                        <td>{{ toggle.toggle_pin }}</td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="6" style="text-align: center;">No end points found</td>
+                        <td colspan="2" style="text-align: center;">No toggles found</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <a href="/add_end_point" class="btn">Add End Point</a>
-        <a href="/" class="btn">&#8592; Back to Chat</a>
+        <a href="/iot.html" class="btn">&#8592; Back to IoT List</a>
     </div>
 </body>
 </html>

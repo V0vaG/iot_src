@@ -38,6 +38,22 @@ def save_config(writing_pipe, reading_pipes, allow_remote_control=False):
         json.dump(config, file)
     print("Configuration saved:", config)
 
+@app.route('/end_point/<name>')
+def end_point(name):
+    if os.path.exists(ENDPOINTS_FILE):
+        with open(ENDPOINTS_FILE, 'r') as file:
+            data = json.load(file)
+        end_point = next((ep for ep in data.get('end_points', []) if ep['name'] == name), None)
+    else:
+        end_point = None
+
+    if end_point is None:
+        return f"<h2>Endpoint '{name}' not found</h2>", 404
+
+    # Render a template with the details
+    return render_template('end_point.html', end_point=end_point)
+
+
 
 def load_config():
     """Load the saved radio configuration from the JSON file."""
