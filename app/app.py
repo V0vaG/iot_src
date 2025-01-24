@@ -11,6 +11,9 @@ import shlex
 app = Flask(__name__)
 
 
+# Define the JSON file path
+ENDPOINTS_FILE = "end_points.json"
+
 CONFIG_FILE = "radio_config.json"
 
 def save_config(writing_pipe, reading_pipes, allow_remote_control=False):
@@ -231,9 +234,46 @@ def send():
         send_message(msg)
     return redirect(url_for('index'))
 
-@app.route('/iot.html')
-def iot():
-    return render_template('iot.html')
+@app.route('/add_end_point', methods=['GET', 'POST'])
+def add_end_point():
+    if request.method == 'POST':
+        # Retrieve form data
+        name = request.form.get('name')
+        toggle_name = request.form.get('toggle_name')
+        toggle_pin = request.form.get('toggle_pin')
+
+        # Prepare the data structure
+        new_end_point = {
+            "name": name,
+            "toggles": [
+                {
+                    "toggle_name": toggle_name,
+                    "toggle_pin": toggle_pin
+                }
+            ]
+        }
+
+        # Load existing data from the JSON file
+        if os.path.exists(ENDPOINTS_FILE):
+            with open(ENDPOINTS_FILE, 'r') as file:
+                data = json.load(file)
+        else:
+            data = {"end_points": []}
+
+        # Append the new end point
+        data["end_points"].append(new_end_point)
+
+        # Save updated data back to the JSON file
+        with open(ENDPOINTS_FILE, 'w') as file:
+            json.dump(data, file, indent=4)
+
+        print(f"New end point saved: {new_end_point}")
+
+        # Redirect back to the IoT page or a confirmation page
+        return redirect(url_for('iot'))
+
+    # If it's a GET request, render the add_end_point.html page
+    return render_template('add_end_point.html')
 
 @app.route('/add_end_point.html')
 def add_end_point():
