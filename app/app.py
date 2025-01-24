@@ -310,6 +310,7 @@ def pair():
         radio.openReadingPipe(1, b'1Node')
         radio.startListening()
         messages.append("Radio configured for pairing: Channel 77, Pipes: 1Node <-> 2Node")
+        print("Radio configured for pairing: Channel 77, Pipes: 1Node <-> 2Node")
         
         # Start listening in a background thread
         def listen_for_endpoint():
