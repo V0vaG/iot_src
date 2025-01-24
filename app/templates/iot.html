@@ -44,13 +44,12 @@
             background-color: #007BFF;
             color: white;
         }
+        /* Styling for the buttons */
         .btn {
             display: inline-block;
             padding: 8px 16px;
-            margin: 0;
             font-size: 14px;
-            font-weight: 600;
-            text-align: center;
+            font-weight: bold;
             color: white;
             background-color: #007BFF;
             border: none;
@@ -62,15 +61,8 @@
         .btn:hover {
             background-color: #0056b3;
         }
-        .btn-link {
-            background: none;
-            color: #007BFF;
-            border: none;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-        .btn-link:hover {
-            color: #0056b3;
+        .btn:focus {
+            outline: none;
         }
     </style>
 </head>
@@ -92,8 +84,8 @@
                 {% for endpoint in end_points %}
                     <tr>
                         <td>
-                            <!-- Use a form with a button for the endpoint name -->
-                            <form action="/end_point/{{ endpoint.name }}" method="GET" style="display: inline;">
+                            <!-- Button for endpoint name -->
+                            <form action="/end_point/{{ endpoint.name }}" method="GET">
                                 <button type="submit" class="btn">{{ endpoint.name }}</button>
                             </form>
                         </td>
