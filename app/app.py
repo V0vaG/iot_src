@@ -88,6 +88,8 @@ def send_command():
         data_rate = endpoint["radio"][0]["data_rate"]
         pa_level = endpoint["radio"][0]["pa_level"]
 
+        print(f"Configured RF24 - Channel: {channel}, Write Pipe: {write_pipe}, Read Pipe: {read_pipe}, Data Rate: {data_rate}, PA Level: {pa_level}")
+
         # Apply configurations
         data_rates = {"1MBPS": RF24_1MBPS, "2MBPS": RF24_2MBPS, "250KBPS": RF24_250KBPS}
         pa_levels = {"MIN": RF24_PA_MIN, "LOW": RF24_PA_LOW, "HIGH": RF24_PA_HIGH, "MAX": RF24_PA_MAX}
