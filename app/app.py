@@ -235,6 +235,10 @@ def send():
 def iot():
     return render_template('iot.html')
 
+@app.route('/add_end_point.html')
+def iot():
+    return render_template('add_end_point.html')
+
 @app.route('/options.html')
 def options():
     # Mapping for display
