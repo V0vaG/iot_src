@@ -76,13 +76,14 @@
                     <th>Channel</th>
                     <th>Read Pipe</th>
                     <th>Write Pipe</th>
+                    <th>Data Rate</th>
+                    <th>PA Level</th>
                 </tr>
             </thead>
             <tbody>
                 {% for endpoint in end_points %}
                     <tr>
                         <td>
-                            <!-- Button for endpoint name -->
                             <form action="/end_point/{{ endpoint.name }}" method="GET">
                                 <button type="submit" class="btn">{{ endpoint.name }}</button>
                             </form>
@@ -90,14 +91,17 @@
                         <td>{{ endpoint.radio[0].channel }}</td>
                         <td>{{ endpoint.radio[0].read_pipe }}</td>
                         <td>{{ endpoint.radio[0].write_pipe }}</td>
+                        <td>{{ endpoint.radio[0].data_rate }}</td>
+                        <td>{{ endpoint.radio[0].pa_level }}</td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="4" style="text-align: center;">No end points found</td>
+                        <td colspan="6" style="text-align: center;">No end points found</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+        
         <a href="/add_end_point" class="btn">Add End Point</a>
         <a href="/" class="btn">&#8592; Back to Chat</a>
     </div>
