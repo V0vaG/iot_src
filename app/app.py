@@ -8,6 +8,8 @@ import json
 import os
 import shlex
 
+from win10toast import ToastNotifier
+
 app = Flask(__name__)
 
 
@@ -303,16 +305,13 @@ def iot():
 @app.route('/pair', methods=['POST'])
 def pair():
     try:
-        # Configure the radio to channel 77, pipe addresses
         radio.stopListening()
         radio.setChannel(77)
         radio.openWritingPipe(b'2Node')
         radio.openReadingPipe(1, b'1Node')
         radio.startListening()
         messages.append("Radio configured for pairing: Channel 77, Pipes: 1Node <-> 2Node")
-        print("Radio configured for pairing: Channel 77, Pipes: 1Node <-> 2Node")
-        
-        # Start listening in a background thread
+
         def listen_for_endpoint():
             global messages
             while True:
@@ -325,20 +324,19 @@ def pair():
                                 message = received_payload.decode('utf-8').strip('\x00')
                                 messages.append(f"Received: {message}")
                                 if "Hi, my name is Ardu" in message:
-                                    # Trigger notification (can be replaced with frontend code)
-                                    os.system(f'notify-send "Found end point!!!" "{message}"')  # For Linux
+                                    show_notification("Found end point!!!", message)
                                     return
                             except UnicodeDecodeError:
                                 messages.append("Received: [Corrupted/Invalid data]")
                 time.sleep(0.5)
 
-        # Start a new thread for pairing
         threading.Thread(target=listen_for_endpoint, daemon=True).start()
         return redirect(url_for('iot'))
 
     except Exception as e:
         messages.append(f"Pairing failed: {e}")
         return redirect(url_for('iot'))
+
 
 
 @app.route('/options.html')
@@ -410,7 +408,10 @@ def update_config():
 
     return redirect(url_for('index'))
 
-
+# Notification function
+def show_notification(title, message):
+    toaster = ToastNotifier()
+    toaster.show_toast(title, message, duration=10)  # Shows for 10 seconds
 
 def start_receiver():
     threading.Thread(target=receive_messages, daemon=True).start()
