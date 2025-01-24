@@ -16,17 +16,17 @@
             height: 100vh;
         }
         .container {
-            width: 600px;
+            width: 800px;
             background-color: #ffffff;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             border-radius: 12px;
             padding: 30px 40px;
-            text-align: center;
         }
         h2 {
             margin-bottom: 20px;
             font-size: 26px;
             color: #333333;
+            text-align: center;
         }
         .form-group {
             margin-bottom: 15px;
@@ -38,7 +38,7 @@
             margin-bottom: 5px;
             color: #555555;
         }
-        input[type="text"] {
+        input[type="text"], select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -46,7 +46,7 @@
             font-size: 14px;
             transition: border-color 0.3s;
         }
-        input[type="text"]:focus {
+        input[type="text"]:focus, select:focus {
             border-color: #007BFF;
             outline: none;
         }
@@ -95,18 +95,24 @@
                 <input type="text" id="write_pipe" name="write_pipe" placeholder="Enter write pipe">
             </div>
             <div class="form-group">
-                <label for="toggle_name">Toggle Name</label>
-                <input type="text" id="toggle_name" name="toggle_name" placeholder="Enter toggle name">
+                <label for="data_rate">Data Rate</label>
+                <select id="data_rate" name="data_rate">
+                    <option value="1MBPS">1MBPS</option>
+                    <option value="2MBPS">2MBPS</option>
+                    <option value="250KBPS">250KBPS</option>
+                </select>
             </div>
             <div class="form-group">
-                <label for="toggle_pin">Toggle Pin</label>
-                <input type="text" id="toggle_pin" name="toggle_pin" placeholder="Enter toggle pin">
+                <label for="pa_level">Power Amplifier Level</label>
+                <select id="pa_level" name="pa_level">
+                    <option value="MIN">MIN</option>
+                    <option value="LOW">LOW</option>
+                    <option value="HIGH">HIGH</option>
+                    <option value="MAX">MAX</option>
+                </select>
             </div>
             <div class="btn-container">
                 <a href="/iot.html" class="btn">&#8592; Back</a>
-                <form action="/pair" method="POST" style="display: inline;">
-                    <button type="submit" class="btn">Pair</button>
-                </form>
                 <button type="submit" class="btn">Save</button>
             </div>
         </form>
