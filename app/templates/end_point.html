@@ -99,6 +99,31 @@
             transform: translateX(26px);
         }
     </style>
+    <script>
+        async function sendCommand(endpointName, toggleName, togglePin, state) {
+            const response = await fetch(`/send_command`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    endpoint_name: endpointName,
+                    toggle_name: toggleName,
+                    toggle_pin: togglePin,
+                    state: state
+                })
+            });
+
+            if (!response.ok) {
+                alert('Failed to send command');
+            }
+        }
+
+        function handleToggleChange(event, endpointName, toggleName, togglePin) {
+            const state = event.target.checked ? 'on' : 'off';
+            sendCommand(endpointName, toggleName, togglePin, state);
+        }
+    </script>
 </head>
 <body>
     <div class="container">
@@ -117,12 +142,10 @@
                         <td>{{ toggle.toggle_name }}</td>
                         <td>{{ toggle.toggle_pin }}</td>
                         <td class="toggle">
-                            <form action="/toggle_action/{{ end_point.name }}/{{ toggle.toggle_name }}" method="POST">
-                                <label class="switch">
-                                    <input type="checkbox" name="toggle_state" onchange="this.form.submit()">
-                                    <span class="slider"></span>
-                                </label>
-                            </form>
+                            <label class="switch">
+                                <input type="checkbox" onchange="handleToggleChange(event, '{{ end_point.name }}', '{{ toggle.toggle_name }}', '{{ toggle.toggle_pin }}')">
+                                <span class="slider"></span>
+                            </label>
                         </td>
                     </tr>
                 {% else %}

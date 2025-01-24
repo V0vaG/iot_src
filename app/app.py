@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import threading
 import time
 import socket
@@ -53,7 +53,48 @@ def end_point(name):
     # Render a template with the details
     return render_template('end_point.html', end_point=end_point)
 
+@app.route('/send_command', methods=['POST'])
+def send_command():
+    try:
+        # Parse the JSON request
+        data = request.json
+        endpoint_name = data['endpoint_name']
+        toggle_name = data['toggle_name']
+        toggle_pin = data['toggle_pin']
+        state = data['state']
 
+        # Load the endpoint configuration from the JSON file
+        if os.path.exists(ENDPOINTS_FILE):
+            with open(ENDPOINTS_FILE, 'r') as file:
+                endpoints = json.load(file).get('end_points', [])
+        else:
+            return jsonify({'error': 'Endpoints configuration file not found'}), 404
+
+        # Find the specified endpoint
+        endpoint = next((ep for ep in endpoints if ep['name'] == endpoint_name), None)
+        if not endpoint:
+            return jsonify({'error': f'Endpoint {endpoint_name} not found'}), 404
+
+        # Get the radio settings from the endpoint
+        radio_config = endpoint.get('radio', [{}])[0]
+        channel = int(radio_config.get('channel', 76))
+        read_pipe = radio_config.get('read_pipe', '1Node').encode('utf-8')
+        write_pipe = radio_config.get('write_pipe', '2Node').encode('utf-8')
+
+        # Configure the radio
+        radio.stopListening()
+        radio.setChannel(channel)
+        radio.openReadingPipe(1, read_pipe)
+        radio.openWritingPipe(write_pipe)
+
+        # Build and send the command message
+        message = f"ardu 0 set {toggle_pin} {state}"
+        radio.startListening()
+        send_message(message)  # Reuse the existing send_message function
+
+        return jsonify({'message': f'Command sent: {message}'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 def load_config():
     """Load the saved radio configuration from the JSON file."""
