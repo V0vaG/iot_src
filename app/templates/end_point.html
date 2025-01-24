@@ -59,6 +59,16 @@
         .btn:hover {
             background-color: #0056b3;
         }
+        .toggle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .toggle input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -69,6 +79,7 @@
                 <tr>
                     <th>Toggle Name</th>
                     <th>Toggle Pin</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -76,10 +87,15 @@
                     <tr>
                         <td>{{ toggle.toggle_name }}</td>
                         <td>{{ toggle.toggle_pin }}</td>
+                        <td class="toggle">
+                            <form action="/toggle_action/{{ end_point.name }}/{{ toggle.toggle_name }}" method="POST">
+                                <input type="checkbox" name="toggle_state" onchange="this.form.submit()" />
+                            </form>
+                        </td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="2" style="text-align: center;">No toggles found</td>
+                        <td colspan="3" style="text-align: center;">No toggles found</td>
                     </tr>
                 {% endfor %}
             </tbody>
