@@ -81,6 +81,9 @@ def send_command():
         read_pipe = radio_config.get('read_pipe', '1Node').encode('utf-8')
         write_pipe = radio_config.get('write_pipe', '2Node').encode('utf-8')
 
+        print(f"Configuring radio: Channel={channel}, Write Pipe={write_pipe}, Read Pipe={read_pipe}")
+        print(f"Message: {message}")
+
         # Configure the radio
         radio.stopListening()
         radio.setChannel(channel)
