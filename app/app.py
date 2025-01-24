@@ -53,51 +53,66 @@ def end_point(name):
     # Render a template with the details
     return render_template('end_point.html', end_point=end_point)
 
+
 @app.route('/send_command', methods=['POST'])
 def send_command():
+    import json
+
+    data = request.get_json()
+    if not data:
+        return {"error": "Invalid data"}, 400
+
+    endpoint_name = data.get("endpoint_name")
+    toggle_name = data.get("toggle_name")
+    toggle_pin = data.get("toggle_pin")
+    state = data.get("state")
+
+    if not endpoint_name or not toggle_name or not toggle_pin or not state:
+        return {"error": "Missing required fields"}, 400
+
+    if os.path.exists(ENDPOINTS_FILE):
+        with open(ENDPOINTS_FILE, 'r') as file:
+            endpoints = json.load(file)
+    else:
+        return {"error": "Endpoints configuration file not found"}, 500
+
+    endpoint = next((ep for ep in endpoints.get("end_points", []) if ep["name"] == endpoint_name), None)
+    if not endpoint:
+        return {"error": f"Endpoint '{endpoint_name}' not found"}, 404
+
     try:
-        # Parse the JSON request
-        data = request.json
-        endpoint_name = data['endpoint_name']
-        toggle_name = data['toggle_name']
-        toggle_pin = data['toggle_pin']
-        state = data['state']
-
-        # Load the endpoint configuration from the JSON file
-        if os.path.exists(ENDPOINTS_FILE):
-            with open(ENDPOINTS_FILE, 'r') as file:
-                endpoints = json.load(file).get('end_points', [])
-        else:
-            return jsonify({'error': 'Endpoints configuration file not found'}), 404
-
-        # Find the specified endpoint
-        endpoint = next((ep for ep in endpoints if ep['name'] == endpoint_name), None)
-        if not endpoint:
-            return jsonify({'error': f'Endpoint {endpoint_name} not found'}), 404
-
-        # Get the radio settings from the endpoint
-        radio_config = endpoint.get('radio', [{}])[0]
-        channel = int(radio_config.get('channel', 76))
-        read_pipe = radio_config.get('read_pipe', '1Node').encode('utf-8')
-        write_pipe = radio_config.get('write_pipe', '2Node').encode('utf-8')
-
-        print(f"Configuring radio: Channel={channel}, Write Pipe={write_pipe}, Read Pipe={read_pipe}")
-        print(f"Message: {message}")
-
-        # Configure the radio
         radio.stopListening()
+
+        # Set channel, writing pipe, and reading pipe
+        channel = int(endpoint["radio"][0]["channel"])
+        write_pipe = endpoint["radio"][0]["write_pipe"]
+        read_pipe = endpoint["radio"][0]["read_pipe"]
+
         radio.setChannel(channel)
-        radio.openReadingPipe(1, read_pipe)
-        radio.openWritingPipe(write_pipe)
+        radio.openWritingPipe(write_pipe.encode('utf-8'))
+        radio.openReadingPipe(1, read_pipe.encode('utf-8'))
 
-        # Build and send the command message
+        # Debugging: Check current settings
+        print(f"Configured RF24 - Channel: {channel}, Write Pipe: {write_pipe}, Read Pipe: {read_pipe}")
+
+        # Construct the message
         message = f"ardu 0 set {toggle_pin} {state}"
-        radio.startListening()
-        send_message(message)  # Reuse the existing send_message function
+        print(f"Sending message: {message}")
 
-        return jsonify({'message': f'Command sent: {message}'})
+        # Send the message
+        success = radio.write(message.encode('utf-8'))
+        radio.startListening()
+
+        print(f"Radio write success: {success}")
+
+        if success:
+            return {"message": "Command sent successfully"}, 200
+        else:
+            return {"error": "Failed to send command"}, 500
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Error during send_command: {e}")
+        return {"error": str(e)}, 500
+
 
 def load_config():
     """Load the saved radio configuration from the JSON file."""
